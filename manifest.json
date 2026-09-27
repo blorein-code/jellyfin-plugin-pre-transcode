@@ -9,6 +9,14 @@
     "imageUrl": "",
     "versions": [
       {
+        "version": "0.11.0.0",
+        "changelog": "Jellyfin 12 support. This build targets Jellyfin 12.0 and 12.1 (.NET 10). Servers still on 10.11 stay on the 0.10 line, which remains in this repository and keeps being offered to them - a 10.11 server will not be offered this build, and it would not load there. Nearly everything carried over unchanged. The one part of the plugin that used an API Jellyfin 12 changed is \"Add as alternate version\", which now links versions by item id rather than by file path, as 12 requires. On 12 that output policy also no longer waits five minutes and then warns that the merge was skipped: Jellyfin 12 recognises the companion file as a version of the source from its name, so the plugin now sees that the grouping is already in place and says so instead (issue #15). Includes the container crop fix from 0.10.1.0 (issue #14). If you are on 12 with 0.10.x installed: it does load there, but its alternate-version merge fails on 12 and is logged as a warning - updating to this release fixes that.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/mugurc/jellyfin-plugin-pre-transcode/releases/download/v0.11.0.0/pre-transcode-0.11.0.0.zip",
+        "checksum": "82e1a5f4ac09547ad19bc5976362d259",
+        "timestamp": "2026-09-27T23:04:29Z"
+      },
+      {
         "version": "0.10.1.0",
         "changelog": "Fixes correct encodes being thrown away after they had finished (issue #14). A Matroska file can ask for its picture to be cropped in the container rather than in the video stream - common on UHD remuxes, where 280 lines off the top and bottom turn a 16:9 frame into a 2.40:1 film. ffmpeg 7.1 and later, including the one bundled with Jellyfin 10.11, applies that crop by itself, so the encode came out right; but the check that runs before an output is kept compared it against the uncropped size, decided the shape was wrong, and discarded the file - after however many hours the encode had taken, and on every file carrying this metadata. The crop is now read from the source, and the check accepts the picture as it is displayed as well as the uncropped frame, because an older ffmpeg ignores the crop and produces the uncropped one. It still rejects what it exists to catch: embedded cover art encoded in place of the film. The displayed size is now used everywhere else it matters too: a cropped file that already fits a resolution cap is no longer queued for nothing, the VideoWidth and VideoHeight rule conditions describe the picture you actually see, and a resolution cap no longer enlarges a cropped picture to reach a limit it was already under. Files without crop metadata - nearly all of them - behave exactly as before.",
         "targetAbi": "10.11.0.0",
